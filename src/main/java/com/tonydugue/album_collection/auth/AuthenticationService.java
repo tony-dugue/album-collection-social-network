@@ -1,11 +1,16 @@
 package com.tonydugue.album_collection.auth;
 
+import com.tonydugue.album_collection.email.EmailService;
+import com.tonydugue.album_collection.email.EmailTemplateName;
 import com.tonydugue.album_collection.role.RoleRepository;
 import com.tonydugue.album_collection.user.Token;
 import com.tonydugue.album_collection.user.TokenRepository;
 import com.tonydugue.album_collection.user.User;
 import com.tonydugue.album_collection.user.UserRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +26,11 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final TokenRepository tokenRepository;
+  private final EmailService emailService;
+  @Value("${application.mailing.frontend.activation-url}")
+  private String activationUrl;
 
-  public void register(RegistrationRequest request) {
+  public void register(RegistrationRequest request) throws MessagingException {
     var userRole = roleRepository.findByName("User")
             // todo - better exception handling
             .orElseThrow(() -> new IllegalStateException("ROLE USER was not initialized"));
@@ -41,10 +49,17 @@ public class AuthenticationService {
     sendValidationEmail(user);
   }
 
-  private void sendValidationEmail(User user) {
-    // 1) generate new token
+  private void sendValidationEmail(User user) throws MessagingException {
     var newToken = generateAndSaveActivationToken(user);
-    // 2) send email
+
+    emailService.sendEmail(
+            user.getEmail(),
+            user.fullName(),
+            EmailTemplateName.ACTIVATE_ACCOUNT,
+            activationUrl,
+            newToken,
+            "Account_activation"
+    );
   }
 
   private String generateAndSaveActivationToken(User user) {
