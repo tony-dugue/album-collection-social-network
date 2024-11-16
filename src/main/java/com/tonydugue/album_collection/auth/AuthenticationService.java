@@ -31,7 +31,7 @@ public class AuthenticationService {
   private String activationUrl;
 
   public void register(RegistrationRequest request) throws MessagingException {
-    var userRole = roleRepository.findByName("User")
+    var userRole = roleRepository.findByName("USER")
             // todo - better exception handling
             .orElseThrow(() -> new IllegalStateException("ROLE USER was not initialized"));
 
