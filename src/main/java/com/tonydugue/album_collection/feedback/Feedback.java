@@ -1,4 +1,4 @@
-package com.tonydugue.album_collection.release;
+package com.tonydugue.album_collection.feedback;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -7,23 +7,17 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 import java.time.LocalDateTime;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Release {
+public class Feedback {
 
   @Id
   @GeneratedValue
   private Integer id;
-  private String title;
-  private String artist;
-  private String reference;
-  private String synopsis;
-  private String releaseCover;
-  private boolean archived;
-  private boolean shareable;
+  private Double note;
+  private String comment;
 
   @CreatedDate
   @Column(nullable = false, updatable = false)
