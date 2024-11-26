@@ -1,5 +1,7 @@
 package com.tonydugue.album_collection.user;
 
+import com.tonydugue.album_collection.history.ReleaseTransactionHistory;
+import com.tonydugue.album_collection.release.Release;
 import com.tonydugue.album_collection.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +43,12 @@ public class User implements UserDetails, Principal {
 
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Role> roles;
+
+  @OneToMany(mappedBy = "owner")
+  private List<Release> releases;
+
+  @OneToMany(mappedBy = "user")
+  private List<ReleaseTransactionHistory> histories;
 
   @CreatedDate
   @Column(nullable = false, updatable = false)
