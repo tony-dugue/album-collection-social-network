@@ -15,4 +15,20 @@ public class ReleaseMapper {
             .shareable(request.shareable())
             .build();
   }
+
+  public ReleaseResponse toReleaseResponse(Release release) {
+    return ReleaseResponse.builder()
+            .id(release.getId())
+            .title(release.getTitle())
+            .artist(release.getArtist())
+            .reference(release.getReference())
+            .synopsis(release.getSynopsis())
+            .rate(release.getRate())
+            .archived(release.isArchived())
+            .shareable(release.isShareable())
+            .owner(release.getOwner().fullName())
+            // todo implement this later
+            //.cover()
+            .build();
+  }
 }

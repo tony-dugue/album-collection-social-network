@@ -1,6 +1,7 @@
 package com.tonydugue.album_collection.release;
 
 import com.tonydugue.album_collection.user.User;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
@@ -18,5 +19,11 @@ public class ReleaseService {
     Release release = releaseMapper.toRelease(request);
     release.setOwner(user);
     return releaseRepository.save(release).getId();
+  }
+
+  public ReleaseResponse findById(Integer releaseId) {
+    return releaseRepository.findById(releaseId)
+            .map(releaseMapper::toReleaseResponse)
+            .orElseThrow(() -> new EntityNotFoundException("No release found with ID:: " + releaseId));
   }
 }

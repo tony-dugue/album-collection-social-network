@@ -5,10 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("releases")
@@ -24,5 +21,12 @@ public class ReleaseController {
           Authentication connectedUser
   ) {
     return ResponseEntity.ok(service.save(request, connectedUser));
+  }
+
+  @GetMapping("{release-id}")
+  public ResponseEntity<ReleaseResponse> findReleaseById(
+          @PathVariable("release-id") Integer releaseId
+  ) {
+    return ResponseEntity.ok(service.findById(releaseId));
   }
 }
