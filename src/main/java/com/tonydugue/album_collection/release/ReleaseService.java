@@ -51,4 +51,22 @@ public class ReleaseService {
             releases.isLast()
     );
   }
+
+  public PageResponse<ReleaseResponse> findAllReleasesByOwner(int page, int size, Authentication connectedUser) {
+    User user = ((User) connectedUser.getPrincipal());
+    Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+    Page<Release> releases = releaseRepository.findAll(ReleaseSpecification.withOwnerId(user.getId()), pageable);
+    List<ReleaseResponse> releasesResponse = releases.stream()
+            .map(releaseMapper::toReleaseResponse)
+            .toList();
+    return new PageResponse<>(
+            releasesResponse,
+            releases.getNumber(),
+            releases.getSize(),
+            releases.getTotalElements(),
+            releases.getTotalPages(),
+            releases.isFirst(),
+            releases.isLast()
+    );
+  }
 }
