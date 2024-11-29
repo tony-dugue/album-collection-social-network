@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface ReleasetransactionHistoryRepository extends JpaRepository<ReleaseTransactionHistory, Integer> {
 
   @Query("""
@@ -24,10 +26,20 @@ public interface ReleasetransactionHistoryRepository extends JpaRepository<Relea
   @Query("""
             SELECT
             (COUNT (*) > 0) AS isBorrowed
-            FROM ReleaseTransactionHistory releaseTransactionHistory
-            WHERE releaseTransactionHistory.user.id = :userId
-            AND releaseTransactionHistory.release.id = :releaseId
-            AND releaseTransactionHistory.returnApproved = false
+            FROM ReleaseTransactionHistory transaction
+            WHERE transaction.user.id = :userId
+            AND transaction.release.id = :releaseId
+            AND transaction.returnApproved = false
             """)
   boolean isAlreadyBorrowedByUser(Integer releaseId, Integer userId);
+
+  @Query("""
+            SELECT transaction
+            FROM ReleaseTransactionHistory transaction
+            WHERE transaction.user.id = :userId
+            AND transaction.release.id = :releaseId
+            AND transaction.returned = false
+            AND transaction.returnApproved = false
+            """)
+  Optional<ReleaseTransactionHistory> findByReleaseIdAndUserId(Integer releaseId, Integer userId);
 }

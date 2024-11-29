@@ -167,4 +167,25 @@ public class ReleaseService {
             .build();
     return transactionHistoryRepository.save(releaseTransactionHistory).getId();
   }
+
+  public Integer returnBorrowedRelease(Integer releaseId, Authentication connectedUser) {
+    Release release = releaseRepository.findById(releaseId)
+            .orElseThrow(() -> new EntityNotFoundException("No release found with ID:: " + releaseId));
+
+    if (release.isArchived() || !release.isShareable()) {
+      throw new OperationNotPermittedException("The requested release is archived or not shareable");
+    }
+
+    User user = ((User) connectedUser.getPrincipal());
+
+    if (Objects.equals(release.getOwner().getId(), user.getId())) {
+      throw new OperationNotPermittedException("You cannot borrow or return your own release");
+    }
+
+    ReleaseTransactionHistory releaseTransactionHistory = transactionHistoryRepository.findByReleaseIdAndUserId(releaseId, user.getId())
+            .orElseThrow(() -> new OperationNotPermittedException("You did not borrow this release"));
+
+    releaseTransactionHistory.setReturned(true);
+    return transactionHistoryRepository.save(releaseTransactionHistory).getId();
+  }
 }
