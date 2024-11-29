@@ -117,10 +117,24 @@ public class ReleaseService {
 
     User user = ((User) connectedUser.getPrincipal());
 
-    if (!Objects.equals(release.getOwner().getReleases(), user.getId())) {
-      throw new OperationNotPermittedException("You cannot update release shareable status");
+    if (!Objects.equals(release.getOwner().getId(), user.getId())) {
+      throw new OperationNotPermittedException("You cannot update others releases shareable status");
     }
     release.setShareable(!release.isShareable());
+    releaseRepository.save(release);
+    return releaseId;
+  }
+
+  public Integer updateArchivedStatus(Integer releaseId, Authentication connectedUser) {
+    Release release = releaseRepository.findById(releaseId)
+            .orElseThrow(() -> new EntityNotFoundException("No release found with ID:: " + releaseId));
+
+    User user = ((User) connectedUser.getPrincipal());
+
+    if (!Objects.equals(release.getOwner().getId(), user.getId())) {
+      throw new OperationNotPermittedException("You cannot update others releases archived status");
+    }
+    release.setArchived(!release.isArchived());
     releaseRepository.save(release);
     return releaseId;
   }

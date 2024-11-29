@@ -74,4 +74,12 @@ public class ReleaseController {
   ) {
     return ResponseEntity.ok(service.updateShareableStatus(releaseId, connectedUser));
   }
+
+  @PatchMapping("/archived/{release-id}")
+  public ResponseEntity<Integer> updateArchivedStatus(
+          @PathVariable("release-id") Integer releaseId,
+          Authentication connectedUser
+  ) {
+    return ResponseEntity.ok(service.updateArchivedStatus(releaseId, connectedUser));
+  }
 }
