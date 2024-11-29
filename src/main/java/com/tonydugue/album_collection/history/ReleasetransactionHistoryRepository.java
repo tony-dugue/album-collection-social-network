@@ -42,4 +42,14 @@ public interface ReleasetransactionHistoryRepository extends JpaRepository<Relea
             AND transaction.returnApproved = false
             """)
   Optional<ReleaseTransactionHistory> findByReleaseIdAndUserId(Integer releaseId, Integer userId);
+
+  @Query("""
+            SELECT transaction
+            FROM ReleaseTransactionHistory transaction
+            WHERE transaction.release.owner.id = :userId
+            AND transaction.release.id = :releaseId
+            AND transaction.returned = true
+            AND transaction.returnApproved = false
+            """)
+  Optional<ReleaseTransactionHistory> findByReleaseIdAndOwnerId(Integer releaseId, Integer userId);
 }

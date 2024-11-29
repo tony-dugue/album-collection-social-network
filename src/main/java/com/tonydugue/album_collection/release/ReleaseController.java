@@ -98,4 +98,12 @@ public class ReleaseController {
   ) {
     return ResponseEntity.ok(service.returnBorrowedRelease(releaseId, connectedUser));
   }
+
+  @PatchMapping("borrow/return/approve/{release-id}")
+  public ResponseEntity<Integer> approveReturnBorrowRelease(
+          @PathVariable("release-id") Integer releaseId,
+          Authentication connectedUser
+  ) {
+    return ResponseEntity.ok(service.approveReturnBorrowedRelease(releaseId, connectedUser));
+  }
 }
