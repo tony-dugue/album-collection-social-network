@@ -1,6 +1,8 @@
 package com.tonydugue.album_collection.release;
 
 import com.tonydugue.album_collection.common.PageResponse;
+import com.tonydugue.album_collection.history.ReleaseTransactionHistory;
+import com.tonydugue.album_collection.history.ReleasetransactionHistoryRepository;
 import com.tonydugue.album_collection.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.List;
 public class ReleaseService {
 
   private final ReleaseRepository releaseRepository;
+  private final ReleasetransactionHistoryRepository transactionHistoryRepository;
   private final ReleaseMapper releaseMapper;
 
   public Integer save(ReleaseRequest request, Authentication connectedUser) {
@@ -67,6 +70,24 @@ public class ReleaseService {
             releases.getTotalPages(),
             releases.isFirst(),
             releases.isLast()
+    );
+  }
+
+  public PageResponse<BorrowedReleaseResponse> findAllBorrowedReleases(int page, int size, Authentication connectedUser) {
+    User user = ((User) connectedUser.getPrincipal());
+    Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+    Page<ReleaseTransactionHistory> allBorrowedReleases = transactionHistoryRepository.findAllBorrowedReleases(pageable, user.getId());
+    List<BorrowedReleaseResponse> releasesResponse = allBorrowedReleases.stream()
+            .map(releaseMapper::toBorrowedReleaseResponse)
+            .toList();
+    return new PageResponse<>(
+            releasesResponse,
+            allBorrowedReleases.getNumber(),
+            allBorrowedReleases.getSize(),
+            allBorrowedReleases.getTotalElements(),
+            allBorrowedReleases.getTotalPages(),
+            allBorrowedReleases.isFirst(),
+            allBorrowedReleases.isLast()
     );
   }
 }

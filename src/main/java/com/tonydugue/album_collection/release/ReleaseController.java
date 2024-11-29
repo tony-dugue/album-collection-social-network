@@ -48,4 +48,13 @@ public class ReleaseController {
   ) {
     return ResponseEntity.ok(service.findAllReleasesByOwner(page, size, connectedUser));
   }
+
+  @GetMapping("/borrowed")
+  public ResponseEntity<PageResponse<BorrowedReleaseResponse>> findAllBorrowedReleases(
+          @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+          @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+          Authentication connectedUser
+  ) {
+    return ResponseEntity.ok(service.findAllBorrowedReleases(page, size, connectedUser));
+  }
 }

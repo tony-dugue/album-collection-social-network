@@ -1,5 +1,6 @@
 package com.tonydugue.album_collection.release;
 
+import com.tonydugue.album_collection.history.ReleaseTransactionHistory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +30,18 @@ public class ReleaseMapper {
             .owner(release.getOwner().fullName())
             // todo implement this later
             //.cover()
+            .build();
+  }
+
+  public BorrowedReleaseResponse toBorrowedReleaseResponse(ReleaseTransactionHistory history) {
+    return BorrowedReleaseResponse.builder()
+            .id(history.getRelease().getId())
+            .title(history.getRelease().getTitle())
+            .artist(history.getRelease().getArtist())
+            .reference(history.getRelease().getReference())
+            .rate(history.getRelease().getRate())
+            .returned((history.isReturned()))
+            .returnApproved(history.isReturnedApproved())
             .build();
   }
 }
