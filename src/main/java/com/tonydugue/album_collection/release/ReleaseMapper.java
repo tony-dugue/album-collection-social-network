@@ -41,7 +41,7 @@ public class ReleaseMapper {
             .reference(history.getRelease().getReference())
             .rate(history.getRelease().getRate())
             .returned((history.isReturned()))
-            .returnApproved(history.isReturnedApproved())
+            .returnApproved(history.isReturnApproved())
             .build();
   }
 }

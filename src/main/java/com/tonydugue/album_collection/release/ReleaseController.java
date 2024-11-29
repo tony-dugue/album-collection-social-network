@@ -82,4 +82,12 @@ public class ReleaseController {
   ) {
     return ResponseEntity.ok(service.updateArchivedStatus(releaseId, connectedUser));
   }
+
+  @PostMapping("borrow/{release-id}")
+  public ResponseEntity<Integer> borrowRelease(
+          @PathVariable("release-id") Integer releaseId,
+          Authentication connectedUser
+  ) {
+    return ResponseEntity.ok(service.borrowRelease(releaseId, connectedUser));
+  }
 }

@@ -28,5 +28,5 @@ public class ReleaseTransactionHistory extends BaseEntity {
   private Release release;
 
   private boolean returned;
-  private boolean returnedApproved;
+  private boolean returnApproved;
 }

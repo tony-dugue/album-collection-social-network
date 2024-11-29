@@ -20,4 +20,14 @@ public interface ReleasetransactionHistoryRepository extends JpaRepository<Relea
             WHERE history.release.owner.id = :userId
             """)
   Page<ReleaseTransactionHistory> findAllReturnedReleases(Pageable pageable, Integer userId);
+
+  @Query("""
+            SELECT
+            (COUNT (*) > 0) AS isBorrowed
+            FROM ReleaseTransactionHistory releaseTransactionHistory
+            WHERE releaseTransactionHistory.user.id = :userId
+            AND releaseTransactionHistory.release.id = :releaseId
+            AND releaseTransactionHistory.returnApproved = false
+            """)
+  boolean isAlreadyBorrowedByUser(Integer releaseId, Integer userId);
 }
