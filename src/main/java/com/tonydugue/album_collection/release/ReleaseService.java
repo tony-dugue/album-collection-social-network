@@ -90,4 +90,22 @@ public class ReleaseService {
             allBorrowedReleases.isLast()
     );
   }
+
+  public PageResponse<BorrowedReleaseResponse> findAllReturnedReleases(int page, int size, Authentication connectedUser) {
+    User user = ((User) connectedUser.getPrincipal());
+    Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+    Page<ReleaseTransactionHistory> allBorrowedReleases = transactionHistoryRepository.findAllReturnedReleases(pageable, user.getId());
+    List<BorrowedReleaseResponse> releasesResponse = allBorrowedReleases.stream()
+            .map(releaseMapper::toBorrowedReleaseResponse)
+            .toList();
+    return new PageResponse<>(
+            releasesResponse,
+            allBorrowedReleases.getNumber(),
+            allBorrowedReleases.getSize(),
+            allBorrowedReleases.getTotalElements(),
+            allBorrowedReleases.getTotalPages(),
+            allBorrowedReleases.isFirst(),
+            allBorrowedReleases.isLast()
+    );
+  }
 }
