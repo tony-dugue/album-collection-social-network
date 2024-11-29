@@ -1,6 +1,7 @@
 package com.tonydugue.album_collection.release;
 
 import com.tonydugue.album_collection.common.PageResponse;
+import com.tonydugue.album_collection.exception.OperationNotPermittedException;
 import com.tonydugue.album_collection.history.ReleaseTransactionHistory;
 import com.tonydugue.album_collection.history.ReleasetransactionHistoryRepository;
 import com.tonydugue.album_collection.user.User;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -107,5 +109,19 @@ public class ReleaseService {
             allBorrowedReleases.isFirst(),
             allBorrowedReleases.isLast()
     );
+  }
+
+  public Integer updateShareableStatus(Integer releaseId, Authentication connectedUser) {
+    Release release = releaseRepository.findById(releaseId)
+            .orElseThrow(() -> new EntityNotFoundException("No release found with ID:: " + releaseId));
+
+    User user = ((User) connectedUser.getPrincipal());
+
+    if (!Objects.equals(release.getOwner().getReleases(), user.getId())) {
+      throw new OperationNotPermittedException("You cannot update release shareable status");
+    }
+    release.setShareable(!release.isShareable());
+    releaseRepository.save(release);
+    return releaseId;
   }
 }
