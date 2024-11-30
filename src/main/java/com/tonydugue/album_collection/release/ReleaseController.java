@@ -1,12 +1,14 @@
 package com.tonydugue.album_collection.release;
 
 import com.tonydugue.album_collection.common.PageResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("releases")
@@ -105,5 +107,16 @@ public class ReleaseController {
           Authentication connectedUser
   ) {
     return ResponseEntity.ok(service.approveReturnBorrowedRelease(releaseId, connectedUser));
+  }
+
+  @PostMapping(value = "/cover/{release-id}", consumes = "multipart/form-data")
+  public ResponseEntity<?> uploadReleaseCoverPicture(
+          @PathVariable("release-id") Integer releaseId,
+          @Parameter()
+          @RequestPart("file") MultipartFile file,
+          Authentication connectedUser
+  ) {
+    service.uploadReleaseCoverPicture(file, connectedUser, releaseId);
+    return ResponseEntity.accepted().build();
   }
 }

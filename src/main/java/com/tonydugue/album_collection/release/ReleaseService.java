@@ -2,6 +2,7 @@ package com.tonydugue.album_collection.release;
 
 import com.tonydugue.album_collection.common.PageResponse;
 import com.tonydugue.album_collection.exception.OperationNotPermittedException;
+import com.tonydugue.album_collection.file.FileStorageService;
 import com.tonydugue.album_collection.history.ReleaseTransactionHistory;
 import com.tonydugue.album_collection.history.ReleasetransactionHistoryRepository;
 import com.tonydugue.album_collection.user.User;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +27,7 @@ public class ReleaseService {
   private final ReleaseRepository releaseRepository;
   private final ReleasetransactionHistoryRepository transactionHistoryRepository;
   private final ReleaseMapper releaseMapper;
+  private final FileStorageService fileStorageService;
 
   public Integer save(ReleaseRequest request, Authentication connectedUser) {
     User user = ((User) connectedUser.getPrincipal());
@@ -208,5 +211,16 @@ public class ReleaseService {
 
     releaseTransactionHistory.setReturnApproved(true);
     return transactionHistoryRepository.save(releaseTransactionHistory).getId();
+  }
+
+  public void uploadReleaseCoverPicture(MultipartFile file, Authentication connectedUser, Integer releaseId) {
+    Release release = releaseRepository.findById(releaseId)
+            .orElseThrow(() -> new EntityNotFoundException("No release found with ID:: " + releaseId));
+
+    User user = ((User) connectedUser.getPrincipal());
+
+    var profileCover = fileStorageService.saveFile(file, user.getId());
+    release.setReleaseCover(profileCover);
+    releaseRepository.save(release);
   }
 }
