@@ -1,5 +1,6 @@
 package com.tonydugue.album_collection.release;
 
+import com.tonydugue.album_collection.file.FileUtils;
 import com.tonydugue.album_collection.history.ReleaseTransactionHistory;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,7 @@ public class ReleaseMapper {
             .archived(release.isArchived())
             .shareable(release.isShareable())
             .owner(release.getOwner().fullName())
-            // todo implement this later
-            //.cover()
+            .cover(FileUtils.readFileFromLocation(release.getReleaseCover()))
             .build();
   }
 
