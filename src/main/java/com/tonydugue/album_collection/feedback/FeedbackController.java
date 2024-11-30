@@ -1,14 +1,12 @@
 package com.tonydugue.album_collection.feedback;
 
+import com.tonydugue.album_collection.common.PageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("feedbacks")
@@ -24,5 +22,15 @@ public class FeedbackController {
           Authentication connectedUser
   ) {
     return ResponseEntity.ok(feedbackService.save(request, connectedUser));
+  }
+
+  @GetMapping("/release/{release-id}")
+  public ResponseEntity<PageResponse<FeedbackResponse>> findAllFeedbacksByRelease(
+          @PathVariable("release-id") Integer releaseId,
+          @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+          @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+          Authentication connectedUser
+  ) {
+    return ResponseEntity.ok(feedbackService.findAllFeedbacksByRelease(releaseId, page, size, connectedUser));
   }
 }
