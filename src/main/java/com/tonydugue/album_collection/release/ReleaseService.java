@@ -159,7 +159,7 @@ public class ReleaseService {
     final boolean isAlreadyBorrowedByUser = transactionHistoryRepository.isAlreadyBorrowedByUser(releaseId, user.getId());
 
     if (isAlreadyBorrowedByUser) {
-      throw new OperationNotPermittedException("Te requested release is already borrowed");
+      throw new OperationNotPermittedException("The requested release is already borrowed");
     }
 
     ReleaseTransactionHistory releaseTransactionHistory = ReleaseTransactionHistory.builder()

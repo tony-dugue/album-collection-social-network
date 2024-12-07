@@ -34,3 +34,4 @@ build/
 
 ### MacOS generated files ###
 .DS_Store
+/uploads/
