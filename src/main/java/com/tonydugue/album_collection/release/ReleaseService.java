@@ -202,8 +202,8 @@ public class ReleaseService {
 
     User user = ((User) connectedUser.getPrincipal());
 
-    if (Objects.equals(release.getOwner().getId(), user.getId())) {
-      throw new OperationNotPermittedException("You cannot borrow or return your own release");
+    if (!Objects.equals(release.getOwner().getId(), user.getId())) {
+      throw new OperationNotPermittedException("You cannot return a release that you do not own");
     }
 
     ReleaseTransactionHistory releaseTransactionHistory = transactionHistoryRepository.findByReleaseIdAndOwnerId(releaseId, user.getId())
